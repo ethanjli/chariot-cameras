@@ -1,0 +1,25 @@
+{
+  "name": "chariot-camera-server",
+  "version": "0.0.0",
+  "description": "camera synchronization server for raspicams",
+  "main": "app.js",
+  "dependencies": {
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "lodash": "~4.14.1",
+    "moment": "~2.14.1",
+    "morgan": "~1.6.1",
+    "socket.io": "~1.4.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git://github.com/lietk12/chariot-camera-server.git",
+  "keywords": [
+    "Tessel"
+  ],
+  "license": "MIT",
+  "readme": "camera synchronization server for raspicams on separate raspberry pi boards."
+}

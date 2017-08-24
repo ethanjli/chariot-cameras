@@ -1,0 +1,85 @@
+<!doctype html>
+
+<head>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="/javascripts/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
+
+<link type="text/css" rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+<script src="/javascripts/bootstrap.min.js"></script>
+
+<script src="/javascripts/lodash.min.js"></script>
+<script src="/javascripts/machina.min.js"></script>
+
+<script src="/javascripts/common.js"></script>
+<script src="/javascripts/controls.js"></script>
+
+<style>
+.vertical-center {
+    min-height: 90%;
+    min-height: 90vh;
+
+    display: flex;
+    align-items: center;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row vertical-center text-center">
+        <div class="col-md-12 text-center">
+            <h1>Control Panel</h1>
+            <div class="row">
+                <span id="status-connection" class="label label-danger">Not connected to server</span> <span id="status-camera" class="label label-warning">No cameras connected to server</span>
+                <hr>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h3 class="panel-title">Recording</h3></div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label>Recording State</label>
+                                    </div>
+                                    <button type="button" id="btn-startreset-recording" class="btn btn-default"></button>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label>Data Export</label>
+                                    </div>
+                                    <a class="btn btn-default" id="btn-download-json" href="/json" target="_blank">Download Recording Metadata</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var socket = io.connect(window.location.host);
+
+var socketConnection = new SocketConnection({
+    clientType: 'control-panel',
+    connectionStatusElem: 'status-connection',
+    cameraStatusElem: 'status-camera',
+    socket: socket
+});
+
+var recording = new Recording({
+    socket: socket,
+    startResetBtn: 'btn-startreset-recording',
+});
+
+</script>
+
+</body>
