@@ -13,10 +13,13 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node server/app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "git://github.com/lietk12/chariot-camera-server.git",
+  "keywords": [
+    "Tessel"
+  ],
   "license": "MIT",
   "readme": "camera synchronization server for raspicams on separate raspberry pi boards."
 }
