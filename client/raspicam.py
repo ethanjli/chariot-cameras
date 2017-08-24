@@ -7,11 +7,11 @@ import argparse
 
 import sockets
 
-# SOCKET.IO HANDLERS
+CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
 
 class Handlers(sockets.StandardHandlers):
-    def __init__(self, socket):
-        super(Handlers, self).__init__(socket, 'camera', 'test-client')
+    def __init__(self, socket, position):
+        super(Handlers, self).__init__(socket, 'camera', 'raspicam-' + position)
         self.process = None
 
     def shutdown(self):
@@ -30,11 +30,13 @@ class Handlers(sockets.StandardHandlers):
         print('[Recording] Stopped recording.')
 
 def main(args):
-    sockets.listen_event_handlers(args.server, Handlers)
+    sockets.listen_event_handlers(args.server, Handlers, args.position)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('position', type=str, choices=CAMERA_POSITIONS,
+                        help='Position of camera.')
     sockets.add_server_arg(parser)
     main(parser.parse_args())
 

@@ -1,5 +1,7 @@
 from functools import partial
 
+import socketIO_client
+
 SERVERS = {
     'local': {
         'host': 'localhost',
@@ -45,4 +47,14 @@ def register_event_handlers(socket, handlers_object):
     for handler_name in dir(handlers_object):
         if not handler_name.startswith('__') and not handler_name.endswith('__'):
             socket.on(handler_name, getattr(handlers_object, handler_name))
+
+def listen_event_handlers(server_name, Handlers, *args):
+    server = SERVERS[server_name]
+    with socketIO_client.SocketIO(server['host'], server['port']) as socket:
+        register_event_handlers(socket, Handlers(socket, *args))
+        socket.wait()
+
+def add_server_arg(arg_parser):
+    arg_parser.add_argument('--server', type=str, choices=SERVERS.keys(),
+                            help='Server to connect to.', default='local')
 
