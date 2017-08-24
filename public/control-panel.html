@@ -32,14 +32,13 @@
 
 <div class="container">
     <div class="row vertical-center text-center">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
             <h1>Control Panel</h1>
-            <div class="row">
+            <div class="row text-center">
                 <span id="status-connection" class="label label-danger">Not connected to server</span> <span id="status-camera" class="label label-warning">No cameras connected to server</span>
                 <hr>
-                <div class="col-md-4">
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-3 col-xs-2"></div>
+                <div class="col-md-4 col-sm-6 col-xs-8">
                     <div class="panel panel-default">
                         <div class="panel-heading"><h3 class="panel-title">Recording</h3></div>
                         <div class="panel-body">
@@ -55,6 +54,12 @@
                                         <label>Data Export</label>
                                     </div>
                                     <a class="btn btn-default" id="btn-download-json" href="/json" target="_blank">Download Recording Metadata</a>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label>Camera Control</label>
+                                    </div>
+                                    <button type="button" id="btn-shutdown" class="btn btn-default">Shutdown Cameras</button>
                                 </div>
                             </form>
                         </div>
@@ -79,6 +84,11 @@ var recording = new Recording({
     socket: socket,
     startResetBtn: 'btn-startreset-recording',
 });
+
+document.getElementById('btn-shutdown').onclick = function() {
+    console.log('Socket: Instructing cameras to shut down.');
+    socket.emit('shutdown');
+}
 
 </script>
 
