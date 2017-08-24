@@ -136,19 +136,25 @@ SocketConnection.prototype.multipleConnected = function(numControlPanels) {
 SocketConnection.prototype.cameraConnected = function(connectionInfo) {
     numCameraInterfaces = connectionInfo.number;
     clientTypes = connectionInfo.clients;
+    this.cameraListDiv.innerHTML = '';
+
     if (numCameraInterfaces === 0) {
         this.cameraStatusElem.innerHTML = 'No cameras connected to server';
         this.cameraStatusElem.className = 'label label-warning';
+        var statusIndicator = document.createElement('span');
+        statusIndicator.innerHTML = 'None';
+        statusIndicator.classList.add('label');
+        statusIndicator.classList.add('label-warning');
+        this.cameraListDiv.appendChild(statusIndicator);
         return;
     }
+
     this.cameraStatusElem.innerHTML = numCameraInterfaces + ' cameras connected to server';
     if (numCameraInterfaces === 4) {
         this.cameraStatusElem.className = 'label label-success';
     } else {
         this.cameraStatusElem.className = 'label label-warning';
     }
-
-    this.cameraListDiv.innerHTML = '';
     clientTypes.forEach(function(camera) {
         var statusIndicator = document.createElement('span');
         statusIndicator.innerHTML = camera;
