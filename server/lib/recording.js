@@ -36,7 +36,7 @@ module.exports = function(socketio) {
       if (startTime === null) {
         startTime = moment();
       }
-      console.log('[Synchronization] Starting recording.');
+      console.log('[Recording] Starting recording.');
       state = 'running';
       controlPanelsRoom().emit('start');
       camerasRoom().emit('start');
@@ -47,14 +47,14 @@ module.exports = function(socketio) {
         return;
       }
       stopTime = moment();
-      console.log('[Synchronization] Stopping recording.');
+      console.log('[Recording] Stopping recording.');
       state = 'stopped';
       controlPanelsRoom().emit('stop');
       logEvent({name: 'stop-recording'});
   }
   function resetRecording() {
       stopRecording();
-      console.log('[Synchronization] Resetting recording.');
+      console.log('[Recording] Resetting recording.');
       state = 'ready';
       events = [];
       controlPanelsRoom().emit('reset');
@@ -65,12 +65,13 @@ module.exports = function(socketio) {
 
   // Event logging
   function logEvent(newEvent) {
-    console.log('[Synchronization] Logging event:', newEvent);
+    console.log('[Recording] Logging event:', newEvent);
     events.push(_.assign(newEvent, {time: moment()}));
   }
 
   // Camera control
   function shutdownCameras() {
+    console.log('[Recording] Sending shutdown to cameras');
     camerasRoom().emit('shutdown');
   }
 
