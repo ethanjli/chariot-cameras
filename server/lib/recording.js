@@ -50,6 +50,7 @@ module.exports = function(socketio) {
       console.log('[Recording] Stopping recording.');
       state = 'stopped';
       controlPanelsRoom().emit('stop');
+      camerasRoom().emit('stop');
       logEvent({name: 'stop-recording'});
   }
   function resetRecording() {
