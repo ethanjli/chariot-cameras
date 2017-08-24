@@ -104,6 +104,7 @@ function SocketConnection(options) {
     this.clientType = options.clientType;
     this.connectionStatusElem = document.getElementById(options.connectionStatusElem);
     this.cameraStatusElem = document.getElementById(options.cameraStatusElem);
+    this.cameraListDiv = document.getElementById(options.cameraListDiv);
     this.socket = options.socket;
     this.listen();
 }
@@ -132,7 +133,9 @@ SocketConnection.prototype.multipleConnected = function(numControlPanels) {
     this.connectionStatusElem.innerHTML = numControlPanels + ' control panels connected to server';
     this.connectionStatusElem.className = 'label label-info';
 }
-SocketConnection.prototype.cameraConnected = function(numCameraInterfaces) {
+SocketConnection.prototype.cameraConnected = function(connectionInfo) {
+    numCameraInterfaces = connectionInfo.number;
+    clientTypes = connectionInfo.clients;
     if (numCameraInterfaces === 0) {
         this.cameraStatusElem.innerHTML = 'No cameras connected to server';
         this.cameraStatusElem.className = 'label label-warning';
@@ -142,7 +145,17 @@ SocketConnection.prototype.cameraConnected = function(numCameraInterfaces) {
     if (numCameraInterfaces === 4) {
         this.cameraStatusElem.className = 'label label-success';
     } else {
-        this.cameraStatusElem.className = 'label label-info';
+        this.cameraStatusElem.className = 'label label-warning';
     }
+
+    this.cameraListDiv.innerHTML = '';
+    clientTypes.forEach(function(camera) {
+        var statusIndicator = document.createElement('span');
+        statusIndicator.innerHTML = camera;
+        statusIndicator.classList.add('label');
+        statusIndicator.classList.add('label-info');
+        this.cameraListDiv.appendChild(statusIndicator);
+        this.cameraListDiv.appendChild(document.createTextNode(' '));
+    }.bind(this));
 }
 

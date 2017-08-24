@@ -37,12 +37,23 @@
             <div class="row text-center">
                 <span id="status-connection" class="label label-danger">Not connected to server</span> <span id="status-camera" class="label label-warning">No cameras connected to server</span>
                 <hr>
-                <div class="col-md-4 col-sm-3 col-xs-2"></div>
-                <div class="col-md-4 col-sm-6 col-xs-8">
+                <div class="col-md-3 col-sm-2 col-xs-0"></div>
+                <div class="col-md-6 col-sm-8 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading"><h3 class="panel-title">Recording</h3></div>
                         <div class="panel-body">
                             <form class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label>Connected Cameras</label>
+                                    </div>
+                                    <div id="status-camera-list" class="row">
+                                        <div class="label label-info">raspicam-front</div>
+                                        <div class="label label-info">raspicam-rear</div>
+                                        <div class="label label-info">raspicam-left</div>
+                                        <div class="label label-info">raspicam-right</div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <div class="row">
                                         <label>Recording State</label>
@@ -77,6 +88,7 @@ var socketConnection = new SocketConnection({
     clientType: 'control-panel',
     connectionStatusElem: 'status-connection',
     cameraStatusElem: 'status-camera',
+    cameraListDiv: 'status-camera-list',
     socket: socket
 });
 
