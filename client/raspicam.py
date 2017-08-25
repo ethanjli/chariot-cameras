@@ -40,6 +40,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('position', type=str, choices=CAMERA_POSITIONS,
                         help='Position of camera.')
-    sockets.add_server_arg(parser)
+    sockets.add_server_arg(parser, default_server='tessel')
     main(parser.parse_args())
 
