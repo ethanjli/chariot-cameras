@@ -5,6 +5,8 @@ import signal
 import subprocess
 import argparse
 
+import picamera
+
 import sockets
 
 CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
@@ -12,22 +14,23 @@ CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
 class Handlers(sockets.StandardHandlers):
     def __init__(self, socket, position):
         super(Handlers, self).__init__(socket, 'camera', 'raspicam-' + position)
-        self.process = None
+        self.camera = picamera.PiCamera()
+        self.camera.vflip = True
+        self.camera.hflip = True
+	self.camera.resolution = (1280, 960)
 
     def shutdown(self):
         print('[Recording] Shutting down...')
+        self.camera.close()
         sys.exit()
 
     def start(self):
         print('[Recording] Starting recording...')
-        self.process = subprocess.Popen(['yes'])
-        print('[Recording] Started recording.')
+        self.camera.start_recording('test.h264')
 
     def stop(self):
         print('[Recording] Stopping recording...')
-        os.kill(self.process.pid, signal.SIGINT)
-        self.process.wait()
-        print('[Recording] Stopped recording.')
+        self.camera.stop_recording()
 
 def main(args):
     sockets.listen_event_handlers(args.server, Handlers, args.position)
