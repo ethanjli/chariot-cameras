@@ -54,7 +54,7 @@ def listen_event_handlers(server_name, Handlers, *args):
         register_event_handlers(socket, Handlers(socket, *args))
         socket.wait()
 
-def add_server_arg(arg_parser):
+def add_server_arg(arg_parser, default_server='local'):
     arg_parser.add_argument('--server', type=str, choices=SERVERS.keys(),
-                            help='Server to connect to.', default='local')
+                            help='Server to connect to.', default=default_server)
 
