@@ -23,6 +23,7 @@ class Handlers(sockets.StandardHandlers):
         print('[Recording] Shutting down...')
         self.camera.close()
         sys.exit()
+        #subprocess.call('sudo shutdown -h now', shell=True)
 
     def start(self):
         print('[Recording] Starting recording...')
