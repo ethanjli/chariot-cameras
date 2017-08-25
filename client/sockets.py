@@ -12,8 +12,8 @@ SERVERS = {
         'port': 80
     },
     'tessel': {
-        'host': None,
-        'port': None
+        'host': '192.168.1.101',
+        'port': 80
     }
 }
 
