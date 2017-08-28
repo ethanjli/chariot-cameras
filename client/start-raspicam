@@ -1,0 +1,24 @@
+#!/bin/sh
+
+FLAGFILE=/var/run/chariot-raspicam.pid
+SIDE=front
+
+case "$IFACE" in
+    lo)
+        # The loopback interface does not count.
+        exit 0
+        ;;
+    wlan0)
+        ;;
+esac
+
+if [ -e $FLAGFILE ]; then
+    kill `cat $FLAGFILE`
+    sudo rm $FLAGFILE
+fi
+if [ $(sudo iwlist wlan0 scanning essid chariot | grep chariot | wc -l) -eq 1 ]; then
+    python /home/pi/chariot-cameras/client/raspicam.py $SIDE &
+    PID=$(echo $!)
+    echo $PID | sudo tee $FLAGFILE > /dev/null
+fi
+

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+FLAGFILE=/var/run/chariot-raspicam.pid
+
+if [ -e $FLAGFILE ]; then
+    kill `cat $FLAGFILE`
+    sudo rm $FLAGFILE
+else
+    exit 0
+fi
+
