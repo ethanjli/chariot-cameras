@@ -9,6 +9,8 @@ import picamera
 
 import sockets
 
+MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
+
 CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
 
 class Handlers(sockets.StandardHandlers):
@@ -18,6 +20,7 @@ class Handlers(sockets.StandardHandlers):
         self.camera.vflip = True
         self.camera.hflip = True
         self.camera.resolution = (1280, 960)
+        self.camera.framerate = 15
         self.quit = quit
 
     def shutdown(self):
@@ -30,7 +33,7 @@ class Handlers(sockets.StandardHandlers):
 
     def start(self):
         print('[Recording] Starting recording...')
-        self.camera.start_recording('test.h264')
+        self.camera.start_recording(os.path.join(MODULE_PATH, 'test.h264'))
 
     def stop(self):
         print('[Recording] Stopping recording...')
@@ -45,7 +48,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('position', type=str, choices=CAMERA_POSITIONS,
                         help='Position of camera.')
-    parser.add_argument('--quit', action="store_true", default=True,
+    parser.add_argument('--quit', action="store_true", default=False,
                         help='Quit instead of shutting down the system.')
     sockets.add_server_arg(parser, default_server='tessel')
     main(parser.parse_args())
