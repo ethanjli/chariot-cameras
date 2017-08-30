@@ -11,7 +11,16 @@ var RecordingBehavior = new machina.BehavioralFsm({
             stop: 'stopped',
             clickStartReset: function(client) {
                 this.transition(client, 'waitingForResponse');
+                var current_time = new Date();
                 client.socket.emit('start');
+                client.socket.emit('event', {
+                    'name': 'controlPanelStart',
+                    'eventTime': {
+                        'iso': current_time.toISOString(),
+                        'local': current_time.toString(),
+                        'unix': current_time.getTime()
+                    }
+                });
             },
             disconnectSocket: 'waitingForResponse'
         },
@@ -23,7 +32,16 @@ var RecordingBehavior = new machina.BehavioralFsm({
             stop: 'stopped',
             clickStartReset: function(client) {
                 this.transition(client, 'waitingForResponse');
+                var current_time = new Date();
                 client.socket.emit('stop');
+                client.socket.emit('event', {
+                    'name': 'controlPanelStop',
+                    'eventTime': {
+                        'iso': current_time.toISOString(),
+                        'local': current_time.toString(),
+                        'unix': current_time.getTime()
+                    }
+                });
             },
             disconnectSocket: 'waitingForResponse'
         },
