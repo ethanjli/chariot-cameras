@@ -11,7 +11,16 @@ var RecordingBehavior = new machina.BehavioralFsm({
             stop: 'stopped',
             clickStartReset: function(client) {
                 this.transition(client, 'waitingForResponse');
+                var current_time = new Date();
                 client.socket.emit('start');
+                client.socket.emit('event', {
+                    'name': 'controlPanelStart',
+                    'clientTime': {
+                        'iso': current_time.toISOString(),
+                        'local': current_time.toString(),
+                        'unix': current_time.getTime()
+                    }
+                });
             },
             disconnectSocket: 'waitingForResponse'
         },
@@ -23,7 +32,16 @@ var RecordingBehavior = new machina.BehavioralFsm({
             stop: 'stopped',
             clickStartReset: function(client) {
                 this.transition(client, 'waitingForResponse');
+                var current_time = new Date();
                 client.socket.emit('stop');
+                client.socket.emit('event', {
+                    'name': 'controlPanelStop',
+                    'clientTime': {
+                        'iso': current_time.toISOString(),
+                        'local': current_time.toString(),
+                        'unix': current_time.getTime()
+                    }
+                });
             },
             disconnectSocket: 'waitingForResponse'
         },
@@ -136,6 +154,7 @@ SocketConnection.prototype.multipleConnected = function(numControlPanels) {
 SocketConnection.prototype.cameraConnected = function(connectionInfo) {
     numCameraInterfaces = connectionInfo.number;
     clientTypes = connectionInfo.clients;
+    ipAddresses = connectionInfo.ipAddresses;
     this.cameraListDiv.innerHTML = '';
 
     if (numCameraInterfaces === 0) {
@@ -155,9 +174,12 @@ SocketConnection.prototype.cameraConnected = function(connectionInfo) {
     } else {
         this.cameraStatusElem.className = 'label label-warning';
     }
-    clientTypes.forEach(function(camera) {
+    clientTypes.forEach(function(camera, index) {
         var statusIndicator = document.createElement('span');
-        statusIndicator.innerHTML = camera;
+            statusIndicator.innerHTML = camera;
+        if (ipAddresses !== undefined) {
+            statusIndicator.innerHTML += ' (' + ipAddresses[index] + ')';
+        }
         statusIndicator.classList.add('label');
         statusIndicator.classList.add('label-info');
         this.cameraListDiv.appendChild(statusIndicator);

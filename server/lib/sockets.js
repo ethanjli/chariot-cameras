@@ -12,13 +12,14 @@ module.exports = function(recording) {
       socket.on('connected', function(data) {
         client = data.client;
         var clientType = data.clientType;
+        var metadata = data.metadata;
         socket.join(client);
         if (client === 'control-panel') {
           console.log('[Sockets] Control Panel Initialization: ' + clientType + ' [' + socket.id + ']');
-          recording.addControlPanel(socket, clientType);
+          recording.addControlPanel(socket, clientType, metadata);
         } else if (client === 'camera') {
           console.log('[Sockets] Camera Initialization: ' + clientType + ' [' + socket.id + ']');
-          recording.addCamera(socket, clientType);
+          recording.addCamera(socket, clientType, metadata);
         } else {
           console.log('[Sockets] Unknown client connected', client);
         }
