@@ -7,6 +7,7 @@ import time
 import datetime
 import argparse
 
+import netifaces as ni
 import picamera
 
 import sockets
@@ -19,13 +20,27 @@ class Handlers(sockets.StandardHandlers):
     def __init__(self, socket, position, quit):
         super(Handlers, self).__init__(socket, 'camera', 'raspicam-' + position)
         self.position = position
+        self.quit = quit
+        
         self.camera = picamera.PiCamera()
         self.camera.vflip = True
         self.camera.hflip = True
         self.camera.resolution = (1280, 960)
         self.camera.framerate = 15
+
         self.recording = False
-        self.quit = quit
+        self.ip = None
+    
+    def connect(self):
+        print('[Sockets] Connected to server.')
+        self.ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
+        self.socket.emit('connected', {
+            'client': self.client,
+            'clientType': self.client_type,
+            'metadata': {
+                'ip': self.ip
+            }
+        })
 
     def shutdown(self):
         print('[Recording] Shutting down...')
