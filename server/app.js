@@ -52,19 +52,13 @@ app.get('/json', function(req, res) {
   var json = JSON.stringify({
     startTime: {
       iso: recording.getStartTime(),
-      local: recording.getStartTime().toLocaleString('en-US', {
-        timeZone: 'PST',
-        timeZoneName: 'short'
-      }),
-      unix: recording.getStartTime().valueOf()
+      local: recording.getPSTTime(recording.getStartTime()),
+      unix: recording.getUnixTime(recording.getStartTime())
     },
     stopTime: {
       iso: recording.getStopTime(),
-      local: recording.getStopTime().toLocaleString('en-US', {
-        timeZone: 'PST',
-        timeZoneName: 'short'
-      }),
-      unix: recording.getStopTime().valueOf()
+      local: recording.getPSTTime(recording.getStopTime()),
+      unix: recording.getUnixTime(recording.getStopTime())
     },
     events: recording.getEvents(),
     clients: recording.getClients()
