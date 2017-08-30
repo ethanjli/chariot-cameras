@@ -5,27 +5,28 @@ import subprocess
 
 import picamera
 import recordings
+import convert_recording
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
+FRAMERATE = 5
+DURATION = 30
+RESOLUTION = (1280, 960)
 
 def main(args):
     calibration_name = 'calibration_' + args.position
-    h264_path = os.path.join(MODULE_PATH, calibration_name + '.h264')
+    h264_path = recordings.get_path(calibration_name + '.h264')
     with picamera.PiCamera() as camera:
-        camera.resolution = (1280, 960)
+        camera.resolution = RESOLUTION
         camera.vflip = True
         camera.hflip = True
-        camera.framerate = 5
+        camera.framerate = FRAMERATE
         print('Recording to {}...'.format(h264_path))
         camera.start_recording(h264_path)
-        camera.wait_recording(30)
+        camera.wait_recording(DURATION)
         camera.stop_recording()
-    mjpeg_path = recordings.recording_path(calibration_name + '.avi')
-    print('Converting to {}...'.format(mjpeg_path))
-    subprocess.call(['avconv', '-r', '15', '-i', h264_path,
-                     '-c:v', 'mjpeg', '-q:v', '2', '-an', '-r', '15', mjpeg_path])
+    convert_recording.convert(calibration_name, input_framerate=FRAMERATE)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
