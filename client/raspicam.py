@@ -11,10 +11,21 @@ import netifaces as ni
 import picamera
 
 import sockets
+import recordings
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
+
+def time_to_ms(unix_timestamp):
+    return int(round(unix_timestamp * 1000))
+
+def time_to_structure(unix_timestamp):
+    dt = datetime.datetime.fromtimestamp(unix_timestamp)
+    return {
+        'iso': dt.isoformat() + 'Z',
+        'unix': time_to_ms(unix_timestamp)
+    }
 
 class Handlers(sockets.StandardHandlers):
     def __init__(self, socket, position, quit):
@@ -29,6 +40,8 @@ class Handlers(sockets.StandardHandlers):
         self.camera.framerate = 15
 
         self.recording = False
+        self.recording_name = None
+
         self.ip = None
     
     def connect(self):
@@ -53,41 +66,36 @@ class Handlers(sockets.StandardHandlers):
     def start(self):
         print('[Recording] Starting recording...')
         current_time = time.time()
-        current_datetime = datetime.datetime.fromtimestamp(current_time)
+        self.recording_name = '{}_{}.h264'.format(self.position, time_to_ms(current_time))
         self.socket.emit('event', {
             'name': 'cameraRecordingStarted',
             'position': self.position,
-            'cameraTime': {
-                'iso': current_datetime.isoformat() + 'Z',
-                'unix': current_time
-            }
+            'cameraTime': time_to_structure(current_time),
+            'recordingName': self.recording_name
         })
-        self.camera.start_recording(os.path.join(MODULE_PATH, 'test.h264'))
+        recordings.make_dir_path(recordings.RECORDINGS_PATH)
+        self.camera.start_recording(os.path.join(MODULE_PATH, recordings.get_path(self.recording_name)))
         self.recording = True
 
     def stop(self):
         print('[Recording] Stopping recording...')
         current_time = time.time()
-        current_datetime = datetime.datetime.fromtimestamp(current_time)
         if self.recording:
             self.camera.stop_recording()
+            os.chmod(recordings.get_path(self.recording_name), 0666) # chmod a+rw
             self.socket.emit('event', {
                 'name': 'cameraRecordingStopped',
                 'position': self.position,
-                'cameraTime': {
-                    'iso': current_datetime.isoformat() + 'Z',
-                    'unix': current_time
-                }
+                'cameraTime': time_to_structure(current_time),
+                'recordingName': self.recording_name
             })
+            self.recording_name = None
         else:
             self.socket.emit('event', {
                 'name': 'cameraRecordingError',
                 'position': self.position,
                 'error': 'Server requested camera to stop recording, but camera was not recording.',
-                'cameraTime': {
-                    'iso': current_datetime.isoformat() + 'Z',
-                    'unix': current_time
-                }
+                'cameraTime': time_to_structure(current_time)
             })
 
 def main(args):

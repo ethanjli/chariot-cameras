@@ -4,6 +4,7 @@ import argparse
 import subprocess
 
 import picamera
+import recordings
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,11 +18,11 @@ def main(args):
         camera.vflip = True
         camera.hflip = True
         camera.framerate = 5
-        #print('Recording to {}...'.format(h264_path))
-        #camera.start_recording(h264_path)
-        #camera.wait_recording(30)
-        #camera.stop_recording()
-    mjpeg_path = os.path.join(MODULE_PATH, calibration_name + '.avi')
+        print('Recording to {}...'.format(h264_path))
+        camera.start_recording(h264_path)
+        camera.wait_recording(30)
+        camera.stop_recording()
+    mjpeg_path = recordings.recording_path(calibration_name + '.avi')
     print('Converting to {}...'.format(mjpeg_path))
     subprocess.call(['avconv', '-r', '15', '-i', h264_path,
                      '-c:v', 'mjpeg', '-q:v', '2', '-an', '-r', '15', mjpeg_path])
