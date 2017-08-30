@@ -74,7 +74,10 @@ class Handlers(sockets.StandardHandlers):
             'recordingName': self.recording_name
         })
         recordings.make_dir_path(recordings.RECORDINGS_PATH)
-        self.camera.start_recording(os.path.join(MODULE_PATH, recordings.get_path(self.recording_name)))
+        self.camera.start_recording(
+            os.path.join(MODULE_PATH, recordings.get_path(self.recording_name)),
+            level='4.2', bitrate=30000000, quality=20
+        )
         self.recording = True
 
     def stop(self):
