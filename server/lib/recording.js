@@ -43,7 +43,7 @@ module.exports = function(socketio) {
       state = 'running';
       controlPanelsRoom().emit('start');
       camerasRoom().emit('start');
-      logEvent({name: 'start-recording'});
+      logEvent({'name': 'start-recording'});
   }
   function stopRecording() {
       if (startTime === null || stopTime !== null) {
@@ -54,7 +54,7 @@ module.exports = function(socketio) {
       state = 'stopped';
       controlPanelsRoom().emit('stop');
       camerasRoom().emit('stop');
-      logEvent({name: 'stop-recording'});
+      logEvent({'name': 'stop-recording'});
   }
   function resetRecording() {
       stopRecording();
@@ -103,6 +103,12 @@ module.exports = function(socketio) {
         'number': numCameras(),
         'clients': cameraTypes()
       });
+      socket.on('event', logEvent);
+      logEvent({
+        'name': 'cameraConnected',
+        'connected': clientType,
+        'all': cameraTypes()
+      });
     },
     removeControlPanel: function(socketId) {
       delete controlPanels[socketId];
@@ -113,6 +119,7 @@ module.exports = function(socketio) {
       controlPanelsRoom().emit('control-connection-info', numControlPanels());
     },
     removeCamera: function(socketId) {
+      var cameraName = clients[socketId];
       delete cameras[socketId];
       delete clients[socketId];
       if (numControlPanels() === 0 && numCameras() == 0 && isRecording()) {
@@ -121,6 +128,11 @@ module.exports = function(socketio) {
       controlPanelsRoom().emit('camera-connection-info', {
         'number': numCameras(),
         'clients': cameraTypes()
+      });
+      logEvent({
+        'name': 'cameraDisconnected',
+        'disconnected': cameraName,
+        'all': cameraTypes()
       });
     },
     getStartTime: function() {
