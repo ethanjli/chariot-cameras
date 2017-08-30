@@ -154,6 +154,7 @@ SocketConnection.prototype.multipleConnected = function(numControlPanels) {
 SocketConnection.prototype.cameraConnected = function(connectionInfo) {
     numCameraInterfaces = connectionInfo.number;
     clientTypes = connectionInfo.clients;
+    ipAddresses = connectionInfo.ipAddresses;
     this.cameraListDiv.innerHTML = '';
 
     if (numCameraInterfaces === 0) {
@@ -173,9 +174,12 @@ SocketConnection.prototype.cameraConnected = function(connectionInfo) {
     } else {
         this.cameraStatusElem.className = 'label label-warning';
     }
-    clientTypes.forEach(function(camera) {
+    clientTypes.forEach(function(camera, index) {
         var statusIndicator = document.createElement('span');
-        statusIndicator.innerHTML = camera;
+            statusIndicator.innerHTML = camera;
+        if (ipAddresses !== undefined) {
+            statusIndicator.innerHTML += ' (' + ipAddresses[index] + ')';
+        }
         statusIndicator.classList.add('label');
         statusIndicator.classList.add('label-info');
         this.cameraListDiv.appendChild(statusIndicator);

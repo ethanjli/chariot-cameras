@@ -6,6 +6,7 @@ module.exports = function(socketio) {
   var controlPanels = {};
   var cameras = {};
   var clients = {};
+  var ipAddresses = {};
   var state = 'ready';
   var startTime = null;
   var stopTime = null;
@@ -37,6 +38,9 @@ module.exports = function(socketio) {
   }
   function cameraTypes() {
     return _.values(_.pick(clients, _.keys(cameras)));
+  }
+  function cameraIpAddresses() {
+    return _.values(_.pick(ipAddresses, _.keys(cameras)));
   }
 
   // Recording synchronization
@@ -100,12 +104,13 @@ module.exports = function(socketio) {
     getPSTTime: getPSTTime,
     getUnixTime: getUnixTime,
     // Management of clients
-    addControlPanel: function(socket, clientType) {
+    addControlPanel: function(socket, clientType, metadata) {
       controlPanels[socket.id] = socket;
       clients[socket.id] = clientType;
       socket.emit('camera-connection-info', {
         'number': numCameras(),
-        'clients': cameraTypes()
+        'clients': cameraTypes(),
+        'ipAddresses': cameraIpAddresses()
       });
       socket.emit('recording-state-info', state);
       socket.on('start', startRecording);
@@ -114,12 +119,17 @@ module.exports = function(socketio) {
       socket.on('event', logEvent);
       socket.on('shutdown', shutdownCameras);
     },
-    addCamera: function(socket, clientType) {
+    addCamera: function(socket, clientType, metadata) {
       cameras[socket.id] = socket;
       clients[socket.id] = clientType;
+      if (metadata !== undefined) {
+        ipAddresses[socket.id] = metadata.ip;
+      }
+      console.log(cameraIpAddresses());
       controlPanelsRoom().emit('camera-connection-info', {
         'number': numCameras(),
-        'clients': cameraTypes()
+        'clients': cameraTypes(),
+        'ipAddresses': cameraIpAddresses()
       });
       socket.on('event', logEvent);
       logEvent({
@@ -143,9 +153,11 @@ module.exports = function(socketio) {
       if (numControlPanels() === 0 && numCameras() == 0 && isRecording()) {
         stopRecording();
       }
+      console.log(cameraIpAddresses());
       controlPanelsRoom().emit('camera-connection-info', {
         'number': numCameras(),
-        'clients': cameraTypes()
+        'clients': cameraTypes(),
+        'ipAddresses': cameraIpAddresses()
       });
       logEvent({
         'name': 'cameraDisconnected',
