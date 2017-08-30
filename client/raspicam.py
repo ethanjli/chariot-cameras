@@ -3,6 +3,8 @@ import sys
 import os
 import signal
 import subprocess
+import time
+import datetime
 import argparse
 
 import picamera
@@ -16,11 +18,13 @@ CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
 class Handlers(sockets.StandardHandlers):
     def __init__(self, socket, position, quit):
         super(Handlers, self).__init__(socket, 'camera', 'raspicam-' + position)
+        self.position = position
         self.camera = picamera.PiCamera()
         self.camera.vflip = True
         self.camera.hflip = True
         self.camera.resolution = (1280, 960)
         self.camera.framerate = 15
+        self.recording = False
         self.quit = quit
 
     def shutdown(self):
@@ -33,11 +37,43 @@ class Handlers(sockets.StandardHandlers):
 
     def start(self):
         print('[Recording] Starting recording...')
+        current_time = time.time()
+        current_datetime = datetime.datetime.fromtimestamp(current_time)
+        self.socket.emit('event', {
+            'name': 'cameraRecordingStarted',
+            'position': self.position,
+            'cameraTime': {
+                'iso': current_datetime.isoformat() + 'Z',
+                'unix': current_time
+            }
+        })
         self.camera.start_recording(os.path.join(MODULE_PATH, 'test.h264'))
+        self.recording = True
 
     def stop(self):
         print('[Recording] Stopping recording...')
-        self.camera.stop_recording()
+        current_time = time.time()
+        current_datetime = datetime.datetime.fromtimestamp(current_time)
+        if self.recording:
+            self.camera.stop_recording()
+            self.socket.emit('event', {
+                'name': 'cameraRecordingStopped',
+                'position': self.position,
+                'cameraTime': {
+                    'iso': current_datetime.isoformat() + 'Z',
+                    'unix': current_time
+                }
+            })
+        else:
+            self.socket.emit('event', {
+                'name': 'cameraRecordingError',
+                'position': self.position,
+                'error': 'Server requested camera to stop recording, but camera was not recording.',
+                'cameraTime': {
+                    'iso': current_datetime.isoformat() + 'Z',
+                    'unix': current_time
+                }
+            })
 
 def main(args):
     sockets.listen_event_handlers(args.server, Handlers,
