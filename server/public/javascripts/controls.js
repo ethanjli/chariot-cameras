@@ -15,7 +15,7 @@ var RecordingBehavior = new machina.BehavioralFsm({
                 client.socket.emit('start');
                 client.socket.emit('event', {
                     'name': 'controlPanelStart',
-                    'eventTime': {
+                    'clientTime': {
                         'iso': current_time.toISOString(),
                         'local': current_time.toString(),
                         'unix': current_time.getTime()
@@ -36,7 +36,7 @@ var RecordingBehavior = new machina.BehavioralFsm({
                 client.socket.emit('stop');
                 client.socket.emit('event', {
                     'name': 'controlPanelStop',
-                    'eventTime': {
+                    'clientTime': {
                         'iso': current_time.toISOString(),
                         'local': current_time.toString(),
                         'unix': current_time.getTime()
