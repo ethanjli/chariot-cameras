@@ -15,7 +15,7 @@ import recordings
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
+CAMERA_POSITIONS = ['left', 'front-left', 'front-right', 'right']
 
 def time_to_ms(unix_timestamp):
     return int(round(unix_timestamp * 1000))

@@ -9,7 +9,7 @@ import convert_recording
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-CAMERA_POSITIONS = ['front', 'rear', 'left', 'right']
+CAMERA_POSITIONS = ['left', 'front-left', 'front-right', 'right']
 FRAMERATE = 5
 DURATION = 30
 RESOLUTION = (1280, 960)

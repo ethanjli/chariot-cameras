@@ -1,7 +1,7 @@
 #!/bin/sh
 
 FLAGFILE=/var/run/chariot-raspicam.pid
-SIDE=front
+SIDE='left'
 
 case "$IFACE" in
     lo)
