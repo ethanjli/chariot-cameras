@@ -28,7 +28,7 @@ def main(args):
             print(i)
             camera.wait_recording(1)
         camera.stop_recording()
-    convert_recording.convert(calibration_name, input_framerate=FRAMERATE)
+    convert_recording.convert(calibration_name, input_framerate=FRAMERATE, output_framerate=FRAMERATE)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
