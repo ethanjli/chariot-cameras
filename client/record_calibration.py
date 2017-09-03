@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 import argparse
-import subprocess
 
 import picamera
 import recordings
@@ -10,8 +9,8 @@ import convert_recording
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 CAMERA_POSITIONS = ['left', 'front-left', 'front-right', 'right']
-FRAMERATE = 5
-DURATION = 30
+FRAMERATE = 2
+DURATION = 120
 RESOLUTION = (1280, 960)
 
 def main(args):
@@ -22,9 +21,12 @@ def main(args):
         camera.vflip = True
         camera.hflip = True
         camera.framerate = FRAMERATE
+        camera.exposure_mode = 'sports'
         print('Recording to {}...'.format(h264_path))
-        camera.start_recording(h264_path)
-        camera.wait_recording(DURATION)
+        camera.start_recording(h264_path, level='4.2', bitrate=30000000, quality=20)
+        for i in range(DURATION):
+            print(i)
+            camera.wait_recording(1)
         camera.stop_recording()
     convert_recording.convert(calibration_name, input_framerate=FRAMERATE)
 

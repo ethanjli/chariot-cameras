@@ -12,15 +12,15 @@ These instructions are for deployment on the Raspberry Pi Zero W.
 * Download the [Raspbian Stretch](https://www.raspberrypi.org/downloads/raspbian/) image.
 * Write it to the micro SD card using Etcher, following [these instructions](https://www.raspberrypi.org/documentation/installation/installing-images/README.md).
 * Change the password using `passwd`.
-* Connect to the Stanford Visitor network.
 * You can uninstall useless programs: `sudo apt-get purge wolfram-engine libreoffice* minecraft-pi sonic-pi; sudo apt-get clean; sudo apt-get autoremove`.
-* Install all updates with `sudo apt-get update` and `sudo apt-get upgrade`.
-* Add `export LC_ALL=C` to `.bashrc`.
-* Run `sudo raspi-config`. Set the Hostname to be `chariot-left` (substitute `left` with the side the camera is on), and set the Boot to be "To CLI". In the "Interfaces" tab, enable the Camera and SSH. In Localisation options, set the locale to be `en_US` (with default locale `en_US.UTF-8`), the Timezone to be `America/Los Angeles`, the keyboard to `Generic 104-key PC` with the `English (US)` layout, and the Wi-fi Country to be "US".
+* Connect to the Stanford Visitor network.
+* Install all updates with `sudo apt-get update; sudo apt-get upgrade`.
 * Open the terminal. In the home directory, clone this repo as `git clone https://github.com/ethanjli/chariot-cameras.git`.
 * Install the `socketIO-client` module as `sudo pip install socketIO-client`.
 * Install `python-netifaces`.
 * Install `libav-tools`. This is needed for the `record_calibration` script to convert a raw h264 recording to a MJPEG video for calibration.
+* Add `export LC_ALL=C` to `.bashrc`.
+* Run `sudo raspi-config`. Set the Hostname to be `chariot-left` (substitute `left` with the side the camera is on), and set the Boot to be "To CLI". In the "Interfaces" tab, enable the Camera and SSH. In Localisation options, set the locale to be `en_US` (with default locale `en_US.UTF-8`), the Timezone to be `America/Los Angeles`, the keyboard to `Generic 104-key PC` with the `English (US)` layout, and the Wi-fi Country to be "US".
 * Open `wpa-supplicant.conf`: `sudo vim.tiny /etc/wpa_supplicant/wpa_supplicant.conf`. Add a network entry with priority 100 for the `chariot` network, so that the Raspberry Pi preferentially auto-connects to that network when the Tessel 2 server is active:
 ```
 network={
