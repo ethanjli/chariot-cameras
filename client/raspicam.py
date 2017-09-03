@@ -34,8 +34,6 @@ class Handlers(sockets.StandardHandlers):
         self.quit = quit
         
         self.camera = picamera.PiCamera()
-        self.camera.vflip = True
-        self.camera.hflip = True
         self.camera.resolution = (1280, 960)
         self.camera.framerate = 15
 
