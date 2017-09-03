@@ -23,12 +23,16 @@ def main(args):
         camera.framerate = FRAMERATE
         camera.exposure_mode = 'sports'
         print('Recording to {}...'.format(h264_path))
+        camera.start_preview()
+        camera.preview.alpha = 128
         camera.start_recording(h264_path, level='4.2', bitrate=30000000, quality=20)
         for i in range(DURATION):
             print(i)
             camera.wait_recording(1)
         camera.stop_recording()
+        camera.stop_preview()
     convert_recording.convert(calibration_name, input_framerate=FRAMERATE, output_framerate=FRAMERATE)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
