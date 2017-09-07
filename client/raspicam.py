@@ -32,16 +32,19 @@ class Handlers(sockets.StandardHandlers):
         super(Handlers, self).__init__(socket, 'camera', 'raspicam-' + position)
         self.position = position
         self.quit = quit
-        
+
         self.camera = picamera.PiCamera()
         self.camera.resolution = (1280, 960)
         self.camera.framerate = 15
+        self.camera.exposure_mode = 'sports'
+        self.camera.awb_mode = 'off'
+        self.camera.awb_gains = (1.25, 1.5)
 
         self.recording = False
         self.recording_name = None
 
         self.ip = None
-    
+
     def connect(self):
         print('[Sockets] Connected to server.')
         self.ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']

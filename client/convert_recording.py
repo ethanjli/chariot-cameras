@@ -3,7 +3,6 @@ import os
 import argparse
 import subprocess
 
-import picamera
 import recordings
 
 def main(args):

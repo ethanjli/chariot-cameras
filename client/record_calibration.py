@@ -18,10 +18,10 @@ def main(args):
     h264_path = recordings.get_path(calibration_name + '.h264')
     with picamera.PiCamera() as camera:
         camera.resolution = RESOLUTION
-        camera.vflip = True
-        camera.hflip = True
         camera.framerate = FRAMERATE
         camera.exposure_mode = 'sports'
+        camera.awb_mode = 'off'
+        camera.awb_gains = (1.25, 1.5)
         print('Recording to {}...'.format(h264_path))
         camera.start_preview()
         camera.preview.alpha = 128

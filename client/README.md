@@ -47,3 +47,8 @@ network={
 * In the local computer with the `video2calibration` repository used during camera calibration, open the `.avi` recording in ImageJ/Fiji through "Import"/"AVI...", using the default settings. Save it as an Image Sequence with JPEG format and an empty name.
 * In the `video2calibration` repository, run the undistort script on the image sequence with the obtained camera calibration. For example, `python undistort.py /run/media/lietk12/6434-6531/calibration/Arducam/calibration_left.yml "/run/media/lietk12/6434-6531/data/Arducam_x1_0/*.jpg" /run/media/lietk12/6434-6531/data/Arducam_x1_0/undistorted/`. Note that the output directory must be created before running the undistort script.
 
+## Stereo Fisheye Calibration
+* Generate a recording with two adjacent cameras and the calibration checkerboard, and download the recording movie AVI files to your local computer. Extract the frames into an image sequence, e.g. using ImageJ.
+* Copy the usable frame pairs from the image sequence manually. Select the number of frame pairs that seems to work acceptably well. Rename them to be of format `left_*.jpg` and `right_*.jpg` in a new directory, where the wildcards are a consecutive sequence of numbers starting from 1.
+* Run [fisheye-stereo-calibration](https://github.com/sourishg/fisheye-stereo-calibration) on the sequence: `./calibrate -w 9 -h 6 -n 5 -s 0.0254 -d "../imgs/" -l "left_" -r "front-left_" -o "left_front-left.yml"`.
+
